@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.teacher.dao.TxTeacherDao">
+    
+	<sql id="txTeacherColumns">
+		a.id AS "id",
+		a.tno AS "tno",
+		a.tname AS "tname",
+		a.tmobile AS "tmobile",
+		a.tsex AS "tsex",
+		a.taddress AS "taddress",
+		a.education AS "education",
+		a.graduation AS "graduation",
+		a.gradudate AS "gradudate",
+		a.officetel AS "officetel",
+		a.dutyrank AS "dutyrank",
+		a.begdate AS "begdate",
+		a.email AS "email",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="txTeacherJoins">
+	</sql>
+    
+	<select id="get" resultType="TxTeacher">
+		SELECT 
+			<include refid="txTeacherColumns"/>
+		FROM tx_teacher a
+		<include refid="txTeacherJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="TxTeacher">
+		SELECT 
+			<include refid="txTeacherColumns"/>
+		FROM tx_teacher a
+		<include refid="txTeacherJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="tno != null and tno != ''">
+				AND a.tno = #{tno}
+			</if>
+			<if test="tname != null and tname != ''">
+				AND a.tname = #{tname}
+			</if>
+			<if test="tmobile != null and tmobile != ''">
+				AND a.tmobile = #{tmobile}
+			</if>
+			<if test="tsex != null and tsex != ''">
+				AND a.tsex = #{tsex}
+			</if>
+			<if test="education != null and education != ''">
+				AND a.education = #{education}
+			</if>
+			<if test="graduation != null and graduation != ''">
+				AND a.graduation = #{graduation}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="TxTeacher">
+		SELECT 
+			<include refid="txTeacherColumns"/>
+		FROM tx_teacher a
+		<include refid="txTeacherJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO tx_teacher(
+			id,
+			tno,
+			tname,
+			tmobile,
+			tsex,
+			taddress,
+			education,
+			graduation,
+			gradudate,
+			officetel,
+			dutyrank,
+			begdate,
+			email,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{tno},
+			#{tname},
+			#{tmobile},
+			#{tsex},
+			#{taddress},
+			#{education},
+			#{graduation},
+			#{gradudate},
+			#{officetel},
+			#{dutyrank},
+			#{begdate},
+			#{email},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE tx_teacher SET 	
+			tno = #{tno},
+			tname = #{tname},
+			tmobile = #{tmobile},
+			tsex = #{tsex},
+			taddress = #{taddress},
+			education = #{education},
+			graduation = #{graduation},
+			gradudate = #{gradudate},
+			officetel = #{officetel},
+			dutyrank = #{dutyrank},
+			begdate = #{begdate},
+			email = #{email},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE tx_teacher SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

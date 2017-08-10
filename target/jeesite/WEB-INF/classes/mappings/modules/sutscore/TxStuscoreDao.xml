@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.sutscore.dao.TxStuscoreDao">
+    
+	<sql id="txStuscoreColumns">
+		a.id AS "id",
+		a.sno AS "sno",
+		a.subno AS "subno",
+		a.examscore AS "examscore",
+		a.examyear AS "examyear",
+		a.examterm AS "examterm",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="txStuscoreJoins">
+	</sql>
+    
+	<select id="get" resultType="TxStuscore">
+		SELECT 
+			<include refid="txStuscoreColumns"/>
+		FROM tx_stuscore a
+		<include refid="txStuscoreJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="TxStuscore">
+		SELECT 
+			<include refid="txStuscoreColumns"/>
+		FROM tx_stuscore a
+		<include refid="txStuscoreJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="sno != null and sno != ''">
+				AND a.sno = #{sno}
+			</if>
+			<if test="subno != null and subno != ''">
+				AND a.subno = #{subno}
+			</if>
+			<if test="examyear != null and examyear != ''">
+				AND a.examyear = #{examyear}
+			</if>
+			<if test="examterm != null and examterm != ''">
+				AND a.examterm = #{examterm}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="TxStuscore">
+		SELECT 
+			<include refid="txStuscoreColumns"/>
+		FROM tx_stuscore a
+		<include refid="txStuscoreJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO tx_stuscore(
+			id,
+			sno,
+			subno,
+			examscore,
+			examyear,
+			examterm,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{sno},
+			#{subno},
+			#{examscore},
+			#{examyear},
+			#{examterm},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE tx_stuscore SET 	
+			sno = #{sno},
+			subno = #{subno},
+			examscore = #{examscore},
+			examyear = #{examyear},
+			examterm = #{examterm},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE tx_stuscore SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

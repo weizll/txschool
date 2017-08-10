@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.grade.dao.TxGradeDao">
+    
+	<sql id="txGradeColumns">
+		a.id AS "id",
+		a.gno AS "gno",
+		a.gname AS "gname",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="txGradeJoins">
+	</sql>
+    
+	<select id="get" resultType="TxGrade">
+		SELECT 
+			<include refid="txGradeColumns"/>
+		FROM tx_grade a
+		<include refid="txGradeJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="TxGrade">
+		SELECT 
+			<include refid="txGradeColumns"/>
+		FROM tx_grade a
+		<include refid="txGradeJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="gno != null and gno != ''">
+				AND a.gno = #{gno}
+			</if>
+			<if test="gname != null and gname != ''">
+				AND a.gname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{gname}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{gname}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{gname},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="TxGrade">
+		SELECT 
+			<include refid="txGradeColumns"/>
+		FROM tx_grade a
+		<include refid="txGradeJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO tx_grade(
+			id,
+			gno,
+			gname,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{gno},
+			#{gname},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE tx_grade SET 	
+			gno = #{gno},
+			gname = #{gname},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE tx_grade SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

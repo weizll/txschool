@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.student.dao.TxStudentDao">
+    
+	<sql id="txStudentColumns">
+		a.id AS "id",
+		a.sno AS "sno",
+		a.name AS "name",
+		a.age AS "age",
+		a.sex AS "sex",
+		a.polity AS "polity",
+		a.address AS "address",
+		a.entrancedate AS "entrancedate",
+		a.duty AS "duty",
+		a.birthday AS "birthday",
+		a.nation AS "nation",
+		a.health AS "health",
+		a.parent AS "parent",
+		a.relation AS "relation",
+		a.phone AS "phone",
+		a.gno AS "gno",
+		a.cno AS "cno",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="txStudentJoins">
+	</sql>
+    
+	<select id="get" resultType="TxStudent">
+		SELECT 
+			<include refid="txStudentColumns"/>
+		FROM tx_student a
+		<include refid="txStudentJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="TxStudent">
+		SELECT 
+			<include refid="txStudentColumns"/>
+		FROM tx_student a
+		<include refid="txStudentJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="sno != null and sno != ''">
+				AND a.sno = #{sno}
+			</if>
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="age != null and age != ''">
+				AND a.age = #{age}
+			</if>
+			<if test="sex != null and sex != ''">
+				AND a.sex = #{sex}
+			</if>
+			<if test="polity != null and polity != ''">
+				AND a.polity = #{polity}
+			</if>
+			<if test="address != null and address != ''">
+				AND a.address = #{address}
+			</if>
+			<if test="entrancedate != null and entrancedate != ''">
+				AND a.entrancedate = #{entrancedate}
+			</if>
+			<if test="birthday != null and birthday != ''">
+				AND a.birthday = #{birthday}
+			</if>
+			<if test="nation != null and nation != ''">
+				AND a.nation = #{nation}
+			</if>
+			<if test="parent != null and parent != ''">
+				AND a.parent = #{parent}
+			</if>
+			<if test="relation != null and relation != ''">
+				AND a.relation = #{relation}
+			</if>
+			<if test="gno != null and gno != ''">
+				AND a.gno = #{gno}
+			</if>
+			<if test="cno != null and cno != ''">
+				AND a.cno = #{cno}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="TxStudent">
+		SELECT 
+			<include refid="txStudentColumns"/>
+		FROM tx_student a
+		<include refid="txStudentJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO tx_student(
+			id,
+			sno,
+			name,
+			age,
+			sex,
+			polity,
+			address,
+			entrancedate,
+			duty,
+			birthday,
+			nation,
+			health,
+			parent,
+			relation,
+			phone,
+			gno,
+			cno,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{sno},
+			#{name},
+			#{age},
+			#{sex},
+			#{polity},
+			#{address},
+			#{entrancedate},
+			#{duty},
+			#{birthday},
+			#{nation},
+			#{health},
+			#{parent},
+			#{relation},
+			#{phone},
+			#{gno},
+			#{cno},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE tx_student SET 	
+			sno = #{sno},
+			name = #{name},
+			age = #{age},
+			sex = #{sex},
+			polity = #{polity},
+			address = #{address},
+			entrancedate = #{entrancedate},
+			duty = #{duty},
+			birthday = #{birthday},
+			nation = #{nation},
+			health = #{health},
+			parent = #{parent},
+			relation = #{relation},
+			phone = #{phone},
+			gno = #{gno},
+			cno = #{cno},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE tx_student SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

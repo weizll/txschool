@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.sturewpun.dao.TxSturewpunDao">
+    
+	<sql id="txSturewpunColumns">
+		a.id AS "id",
+		a.sno AS "sno",
+		a.sort AS "sort",
+		a.type AS "type",
+		a.reason AS "reason",
+		a.rptime AS "rptime",
+		a.remark AS "remark",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="txSturewpunJoins">
+	</sql>
+    
+	<select id="get" resultType="TxSturewpun">
+		SELECT 
+			<include refid="txSturewpunColumns"/>
+		FROM tx_sturewpun a
+		<include refid="txSturewpunJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="TxSturewpun">
+		SELECT 
+			<include refid="txSturewpunColumns"/>
+		FROM tx_sturewpun a
+		<include refid="txSturewpunJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="sno != null and sno != ''">
+				AND a.sno = #{sno}
+			</if>
+			<if test="sort != null and sort != ''">
+				AND a.sort = #{sort}
+			</if>
+			<if test="type != null and type != ''">
+				AND a.type = #{type}
+			</if>
+			<if test="reason != null and reason != ''">
+				AND a.reason = #{reason}
+			</if>
+			<if test="rptime != null and rptime != ''">
+				AND a.rptime = #{rptime}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="TxSturewpun">
+		SELECT 
+			<include refid="txSturewpunColumns"/>
+		FROM tx_sturewpun a
+		<include refid="txSturewpunJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO tx_sturewpun(
+			id,
+			sno,
+			sort,
+			type,
+			reason,
+			rptime,
+			remark,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{sno},
+			#{sort},
+			#{type},
+			#{reason},
+			#{rptime},
+			#{remark},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE tx_sturewpun SET 	
+			sno = #{sno},
+			sort = #{sort},
+			type = #{type},
+			reason = #{reason},
+			rptime = #{rptime},
+			remark = #{remark},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE tx_sturewpun SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
